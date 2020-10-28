@@ -1,0 +1,82 @@
+apply plugin: 'maven-publish'
+
+def binApiKey = '1cb84f9f8a49a1c6b9cbc6fa34c073cc3015b1e3'
+def binUser = "xxxx"
+def versionCode = '3.0.2'
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            name "HowieWang"
+            email "howiewh@163.com"
+        }
+        developer {
+            name "su"
+            email "recallsufuture@gmail.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/xxauth/authing-sdk-java"
+    }
+}
+
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.kotlin.getSrcDirs()
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.xauth'
+            artifactId 'java-core'
+            version versionCode
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'A leading identity authentication service platform')
+                root.appendNode('name', 'XAuthSDK')
+                root.appendNode('url', 'https://xauth.lucfish.com/')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = binUser
+    key = binApiKey
+    publications = ['MyPublication']
+    pkg {
+        repo = 'AuthingSDK'
+        name = 'Java'
+        userOrg = binUser
+        licenses = ['Apache-2.0']
+        version {
+            name = versionCode
+            mavenCentralSync {
+                sync = true //[Default: true] Determines whether to sync the version to Maven Central.
+                user = 'xieyang' //OSS user token: mandatory
+                password = 'it is a secret' //OSS user password: mandatory
+                close = '1' //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            }
+        }
+        websiteUrl = 'https://xauth.lucfish.com/'
+        desc = 'A leading identity authentication service platform'
+    }
+}
