@@ -19,8 +19,8 @@ public class AuthenticationClientTest {
 
     @Before
     public void before() {
-        client = new AuthenticationClient("59f86b4832eb28071bdd9214");
-        client.setHost("http://localhost:3000");
+        client = new AuthenticationClient("7f74f487bc121542ad0c7e3d");
+        client.setHost("http://localhost:7001");
     }
 
     @Test
@@ -50,7 +50,7 @@ public class AuthenticationClientTest {
     @Test
     public void sendSmsCode() throws IOException {
         String phone = "17611161550";
-        client.sendSmsCode(phone).execute();
+        System.out.println(client.sendSmsCode(phone).execute());
     }
 
     @Test
@@ -71,9 +71,9 @@ public class AuthenticationClientTest {
 
     @Test
     public void loginByPhoneCode() throws IOException, GraphQLException {
-        String phone = "17611161550";
+        String phone = "16620981522";
         String code = "2190";
-        User user = client.loginByPhoneCode(new LoginByPhoneCodeInput(phone, code)).execute();
+        User user = client.loginByPhoneCode(new LoginByPhoneCodeInput(phone, code, true)).execute();
         Assert.assertEquals(user.getPhone(), phone);
     }
 
@@ -87,12 +87,12 @@ public class AuthenticationClientTest {
 
     @Test
     public void checkLoginStatus() throws IOException, GraphQLException {
-        String username = "test";
-        String password = "123456";
-        client.loginByUsername(new LoginByUsernameInput(username, password)).execute();
+        String phone = "15116660785";
+        String code = "2190";
+        User user = client.loginByPhoneCode(new LoginByPhoneCodeInput(phone, code, true)).execute();
+        Assert.assertEquals(user.getPhone(), phone);
 
         JwtTokenStatus status = client.checkLoginStatus().execute();
-        Assert.assertEquals(status.getCode().intValue(), 200);
     }
 
     @Test

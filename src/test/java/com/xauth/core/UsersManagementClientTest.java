@@ -30,7 +30,7 @@ public class UsersManagementClientTest {
     @Before
     public void before() throws IOException, GraphQLException {
         managementClient = new ManagementClient("7f74f487bc121542ad0c7e3d", "cb6254521050caf857855214bc9dba98");
-        managementClient.setHost("http://localhost:7001");
+        managementClient.setHost("http://192.168.0.104:7001");
         usersManagementClient = managementClient.users();
 
         managementClient.requestToken().execute();
@@ -54,6 +54,7 @@ public class UsersManagementClientTest {
     public void list() throws IOException, GraphQLException {
         PaginatedUsers users = usersManagementClient.list().execute();
         Assert.assertTrue(users.getTotalCount() > 0);
+        System.out.println(users);
     }
 
     @Test
